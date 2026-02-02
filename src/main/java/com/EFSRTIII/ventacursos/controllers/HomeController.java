@@ -16,4 +16,6 @@ public class HomeController {
         return "pages/nosotros";
     }
 
+    @GetMapping("/soporte")
+    public String soporte() { return "pages/soporte";}
 }
