@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/layout :: layout}">
+<body>
+<div th:fragment="content" class="pt-16">
+
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+
+            <div class="text-center mb-20">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                    Nuestros Programas Educativos
+                </h1>
+                <p class="text-lg text-slate-500 max-w-2xl mx-auto">
+                    Elige entre nuestros cursos especializados y comienza tu viaje hacia la libertad financiera
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Iteracion -->
+                <div th:each="program : ${programas}" class="border border-slate-800 rounded-xl hover:border-emerald-500/50 transition-all hover:shadow-lg hover:shadow-emerald-500/10 flex flex-col p-6">
+
+                    <!-- Header -->
+                    <div class="mb-4">
+
+                        <h3 class="text-white text-xl font-semibold"
+                            th:text="${program.titulo}">
+                        </h3>
+
+                        <p class="text-slate-500 mt-2"
+                           th:text="${program.descripcion}">
+                        </p>
+                    </div>
+
+                    <!-- Contenido -->
+                    <div class="flex-grow flex flex-col justify-between">
+
+                        <div class="space-y-4">
+
+                            <!-- Precio -->
+                            <div class="border-t border-slate-800 pt-4 mt-4">
+                                <div class="flex items-baseline gap-2">
+
+                                    <span class="text-3xl font-bold text-emerald-500"
+                                         th:text="'S/' + ${program.precio}">
+                                    </span>
+                                    <span class="text-slate-500 text-sm">
+                                        / acceso de por vida
+                                    </span>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <button  class="w-full mt-6 bg-green-700 hover:bg-green-600 text-white py-2 rounded shadow-lg shadow-green-500/40 hover:shadow-green-400/40 transition-all duration-300">
+                            Inscribirse Ahora
+                        </button>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>
