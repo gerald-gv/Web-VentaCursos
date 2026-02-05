@@ -6,6 +6,7 @@ import com.EFSRTIII.ventacursos.service.RolService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RolServiceImpl implements RolService {
@@ -35,5 +36,10 @@ public class RolServiceImpl implements RolService {
     @Override
     public void eliminarRoles(Integer id) {
         rolRepo.deleteById(id);
+    }
+
+    @Override
+    public Optional<Rol> buscarPorNombre(String nombre) {
+        return rolRepo.findByNombreRol(nombre);
     }
 }
