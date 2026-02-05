@@ -1,15 +1,8 @@
 package com.EFSRTIII.ventacursos.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
+
 import java.time.LocalDateTime;
 
 import java.util.HashSet;
@@ -34,7 +27,7 @@ public class Usuario {
     @CreationTimestamp
     private LocalDateTime fechaCreacion = LocalDateTime.now();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="usuario_rol",
             joinColumns=@JoinColumn(name="id_usuario"),
