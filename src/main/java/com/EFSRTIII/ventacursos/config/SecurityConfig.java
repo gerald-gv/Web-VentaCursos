@@ -52,7 +52,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")
                         .usernameParameter("email")
                         .passwordParameter("contrasenia")
-                        .defaultSuccessUrl("/rutaQueDeberiaSerLaDelUsuario", true)
+                        .defaultSuccessUrl("/", true)
                         .failureUrl("/?error=true")
                         .permitAll()
                 )

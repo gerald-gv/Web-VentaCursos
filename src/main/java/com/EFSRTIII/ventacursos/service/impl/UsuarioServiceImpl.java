@@ -50,4 +50,17 @@ public class UsuarioServiceImpl implements UsuarioService {
     public Optional<Usuario> buscarPorEmail(String email) {
         return usuarioRepo.findByEmail(email);
     }
+
+    @Override
+    public Usuario actualizarUsuario(Usuario usuario, String nuevoNombre, String nuevoEmail, String nuevaContrasenia) {
+        usuario.setNombre(nuevoNombre);
+        usuario.setEmail(nuevoEmail);
+
+        // Encriptacion de la nueva contraseña
+        if (nuevaContrasenia != null && !nuevaContrasenia.isBlank()) {
+            usuario.setContrasenia(passwordEncoder.encode(nuevaContrasenia));
+        }
+
+        return usuarioRepo.save(usuario);
+    }
 }

@@ -13,4 +13,6 @@ public interface UsuarioService {
     public void eliminarUsuario(Integer id);
 
     public Optional<Usuario> buscarPorEmail(String email);
+
+    public Usuario actualizarUsuario(Usuario usuario, String nuevoNombre, String nuevoEmail, String nuevaContrasenia);
 }
