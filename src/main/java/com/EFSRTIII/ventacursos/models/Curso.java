@@ -1,29 +1,36 @@
 package com.EFSRTIII.ventacursos.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="cursos")
 public class Curso {
 
+    @Getter
+    @Setter
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id_curso")
     private Integer idCurso;
 
+    @Getter
     private String titulo;
+    @Getter
     private String  descripcion;
+    @Getter
     private BigDecimal precio;
+    @Getter
+    @Setter
     private boolean activo;
+    @Getter
     @Column(name="fecha_creacion")
     @CreationTimestamp
     private LocalDateTime fechaCreacion = LocalDateTime.now();;
@@ -51,51 +58,33 @@ public class Curso {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public Integer getIdCurso() {
-        return idCurso;
-    }
-
-    public void setIdCurso(Integer idCurso) {
-        this.idCurso = idCurso;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
     public void setTitulo(String titulo) {
         this.titulo = titulo;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
     }
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
-    public BigDecimal getPrecio() {
-        return precio;
-    }
-
     public void setPrecio(BigDecimal precio) {
         this.precio = precio;
-    }
-
-    public boolean isActivo() {
-        return activo;
     }
 
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
 
-    public LocalDateTime getFechaCreacion() {
-        return fechaCreacion;
-    }
-
     public void setFechaCreacion(LocalDateTime fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
+
+    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Compra> compras = new ArrayList<>();
+
+    // Método helper
+    public void agregarCompra(Compra compra) {
+        compras.add(compra);
+        compra.setCurso(this);
+    }
+
 }

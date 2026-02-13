@@ -1,6 +1,8 @@
 package com.EFSRTIII.ventacursos.controllers;
 
+import com.EFSRTIII.ventacursos.models.Curso;
 import com.EFSRTIII.ventacursos.models.Usuario;
+import com.EFSRTIII.ventacursos.service.CursoService;
 import com.EFSRTIII.ventacursos.service.UsuarioService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -15,10 +18,12 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
     private final PasswordEncoder passwordEncoder;
+    private final CursoService cursoService;
 
-    public UsuarioController(UsuarioService usuarioService, PasswordEncoder passwordEncoder){
+    public UsuarioController(UsuarioService usuarioService, PasswordEncoder passwordEncoder, CursoService cursoService){
         this.usuarioService = usuarioService;
         this.passwordEncoder = passwordEncoder;
+        this.cursoService = cursoService;
     }
 
     @GetMapping("/mi-cuenta")

@@ -33,4 +33,10 @@ public class CursoServiceImpl implements CursoService {
         cursoRepo.deleteById(id);
     }
 
+    @Override
+    public List<Curso> obtenerCursosComprados(String email) {
+        // lógica aquí
+        return null;
+    }
+
 }

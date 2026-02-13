@@ -29,6 +29,7 @@ public class AuthController {
         usuario.setNombre(dto.getNombre());
         usuario.setEmail(dto.getEmail());
         usuario.setContrasenia(dto.getContrasenia());
+        usuario.setActivo(true);
 
         Rol rolUsuario = rolService.buscarPorNombre("ROLE_CLIENTE").orElseThrow();
         usuario.getRoles().add(rolUsuario);
