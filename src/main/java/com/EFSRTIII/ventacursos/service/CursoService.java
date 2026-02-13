@@ -12,4 +12,6 @@ public interface CursoService {
 
     public void eliminarCurso(Integer id);
 
+    List<Curso> obtenerCursosComprados(String email);
+
 }

@@ -1,32 +1,49 @@
 package com.EFSRTIII.ventacursos.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name="usuarios")
 public class Usuario {
 
+    @Setter
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_usuario")
     private Integer idUsuario;
 
+    @Setter
+    @Getter
     private String nombre;
+    @Setter
+    @Getter
+    @Column(unique = true, nullable = false)
     private String email;
+    @Setter
+    @Getter
     @Column(name="contraseña")
     private String contrasenia;
 
+    @Getter
+    @Setter
     private boolean activo;
+    @Getter
     @Column(name="fecha_creacion", insertable = true, updatable = false)
     @CreationTimestamp
     private LocalDateTime fechaCreacion = LocalDateTime.now();
 
+    @Getter
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="usuario_rol",
@@ -59,59 +76,21 @@ public class Usuario {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public Integer getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getContrasenia() {
-        return contrasenia;
-    }
-
-    public void setContrasenia(String contrasenia) {
-        this.contrasenia = contrasenia;
-    }
-
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
-    }
-
-    public LocalDateTime getFechaCreacion() {
-        return fechaCreacion;
-    }
-
     public void setFechaCreacion(LocalDateTime fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
-    }
-
-    public Set<Rol> getRoles() {
-        return roles;
     }
 
     public void setRoles(Set<Rol> roles) {
         this.roles = roles;
     }
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Compra> compras = new ArrayList<>();
+
+    // Método helper
+    public void agregarCompra(Compra compra) {
+        compras.add(compra);
+        compra.setUsuario(this);
+    }
+
 }
