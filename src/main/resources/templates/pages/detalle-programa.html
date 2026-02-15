@@ -2,115 +2,175 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/layout :: layout}">
 
-<div th:fragment="content"
-     class="bg-neutral-950 text-white min-h-screen">
+<div th:fragment="content" class="bg-neutral-950 min-h-screen">
 
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-4xl">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-        <!-- VOLVER -->
         <a href="/programas"
-           class="inline-block mb-6 text-emerald-400 hover:text-emerald-300 transition">
-            ← Volver al catálogo
+           class="inline-flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-500 hover:text-white transition-all group mb-8">
+            <svg class="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Volver al catálogo
         </a>
 
-        <!-- CARD PRINCIPAL -->
-        <div class="bg-neutral-900 border border-slate-800 rounded-xl p-8 shadow-lg">
+        <div class="bg-neutral-900/50 border border-slate-800 rounded-3xl overflow-hidden backdrop-blur-sm shadow-2xl">
 
-            <!-- TITULO -->
-            <h1 class="text-3xl font-semibold text-emerald-400 mb-4"
-                th:text="${curso.titulo}">
-                Título del Curso
-            </h1>
-
-            <!-- DESCRIPCION -->
-            <p class="text-slate-400 leading-relaxed text-lg mb-8"
-               th:text="${curso.descripcion}">
-                Descripción detallada
-            </p>
-
-            <!-- PRECIO -->
-            <div class="bg-neutral-800 border border-slate-700 rounded-lg p-6 mb-8">
-                <div class="text-4xl font-bold text-white">
-
-                    <span th:if="${curso.precio == 0}" class="text-emerald-500">
-                        🎉 GRATIS
-                    </span>
-
-                    <span th:if="${curso.precio > 0}">
-                        S/
-                        <span class="text-emerald-500"
-                              th:text="${#numbers.formatDecimal(curso.precio,1,2)}">
-                            0.00
-                        </span>
-                    </span>
-
-                </div>
-            </div>
-
-            <!-- YA COMPRADO -->
             <div th:if="${yaComprado}"
-                 class="bg-emerald-500/10 border border-emerald-500 rounded-lg p-4 mb-6 text-center">
-
-                <p class="text-emerald-400 font-medium">
-                    ✅ Ya tienes este curso
-                </p>
-
-                <a href="/mis-cursos"
-                   class="inline-block mt-2 text-white underline hover:text-emerald-300 transition">
-                    Ver mis cursos
+                 class="bg-emerald-500/5 border-b border-emerald-500/20 p-8 text-center">
+                <div class="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <p class="text-white font-bold text-xl mb-6 tracking-tight">Ya eres parte de este programa</p>
+                <a th:href="@{/mis-cursos/{id}(id=${curso.idCurso})}"
+                   class="inline-flex items-center bg-emerald-500 hover:bg-emerald-400 text-black px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-emerald-500/20">
+                    Ir al aula virtual
                 </a>
-
             </div>
 
-
-            <!-- FORM COMPRA -->
-            <form th:if="${!yaComprado}"
-                  th:action="@{/comprar-programa}"
-                  method="post"
-                  class="space-y-6">
-
-                <input type="hidden"
-                       name="idCurso"
-                       th:value="${curso.idCurso}">
-
-                <!-- METODO PAGO -->
-                <div th:if="${curso.precio > 0}">
-                    <label for="metodoPago"
-                           class="block mb-2 text-sm text-slate-400">
-                        Método de pago
-                    </label>
-
-                    <select name="metodoPago"
-                            id="metodoPago"
-                            required
-                            class="w-full bg-neutral-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-emerald-500 focus:outline-none transition">
-
-                        <option value="">Selecciona un método</option>
-                        <option value="paypal">PayPal</option>
-
-                    </select>
+            <div class="p-8 md:p-12">
+                <div th:if="${param.pagoCancelado}"
+                     class="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-4 mb-8 flex items-center gap-4 animate-pulse-once">
+                    <svg class="w-5 h-5 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <p class="text-xs font-bold uppercase tracking-widest text-amber-500">El pago fue cancelado. Inténtalo de nuevo.</p>
                 </div>
 
+                <div class="max-w-2xl">
+                    <h1 class="text-4xl font-extrabold text-white tracking-tight mb-4" th:text="${curso.titulo}">Título del Curso</h1>
+                    <p class="text-neutral-400 leading-relaxed text-lg" th:text="${curso.descripcion}">Descripción del programa.</p>
+                </div>
 
-                <!-- BOTON COMPRAR -->
-                <button type="submit"
-                        class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-lg font-semibold shadow-lg shadow-emerald-500/30 hover:shadow-emerald-400/30 transition-all duration-300">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-10">
+                    <div class="bg-neutral-950/50 border border-slate-800 p-5 rounded-2xl">
+                        <span class="text-[9px] font-black uppercase tracking-[0.2em] text-neutral-500 block mb-2">Docente</span>
+                        <p class="text-white font-bold" th:text="${curso.instructor}">Nombre Instructor</p>
+                    </div>
+                    <div class="bg-neutral-950/50 border border-slate-800 p-5 rounded-2xl">
+                        <span class="text-[9px] font-black uppercase tracking-[0.2em] text-neutral-500 block mb-2">Duración Total</span>
+                        <p class="text-white font-bold" th:text="${curso.duracion}">6 Horas</p>
+                    </div>
+                    <div class="bg-neutral-950/50 border border-emerald-500/20 p-5 rounded-2xl relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <span class="text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500 block mb-2">Inversión</span>
+                        <p class="text-white font-black text-2xl tracking-tighter">
+                            <span th:if="${curso.precio == 0}">GRATIS</span>
+                            <span th:if="${curso.precio > 0}">$<span th:text="${#numbers.formatDecimal(curso.precio,1,2)}">0.00</span> <span class="text-[10px] text-neutral-500 font-bold uppercase tracking-widest ml-1">USD</span></span>
+                        </p>
+                    </div>
+                </div>
 
-                    <span th:if="${curso.precio == 0}">
-                        🎓 Obtener Gratis
-                    </span>
+                <div class="grid md:grid-cols-2 gap-12">
 
-                    <span th:if="${curso.precio > 0}">
-                        💳 Comprar Ahora
-                    </span>
+                    <div th:if="${objetivos != null && !objetivos.isEmpty()}">
+                        <h2 class="text-[11px] font-black uppercase tracking-[0.3em] text-emerald-500 mb-6 flex items-center gap-3">
+                            <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            Lo que lograrás
+                        </h2>
+                        <ul class="space-y-4">
+                            <li th:each="objetivo : ${objetivos}" class="flex items-start gap-3 text-sm text-neutral-300">
+                                <span class="w-5 h-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+                                </span>
+                                <span th:text="${objetivo}">Objetivo</span>
+                            </li>
+                        </ul>
+                    </div>
 
-                </button>
+                    <div th:if="${requisitos != null && !requisitos.isEmpty()}">
+                        <h2 class="text-[11px] font-black uppercase tracking-[0.3em] text-neutral-500 mb-6 flex items-center gap-3">
+                            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Requisitos
+                        </h2>
+                        <ul class="space-y-4">
+                            <li th:each="requisito : ${requisitos}" class="flex items-start gap-3 text-sm text-neutral-400">
+                                <span class="text-neutral-600 font-bold">•</span>
+                                <span th:text="${requisito}">Requisito</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
-            </form>
+                <hr class="my-12 border-slate-800">
 
+                <div class="mb-12" th:if="${contenidos != null && !contenidos.isEmpty()}">
+                    <h2 class="text-[11px] font-black uppercase tracking-[0.3em] text-neutral-500 mb-6">Contenido del programa</h2>
+                    <div class="bg-neutral-950/50 border border-slate-800 rounded-2xl divide-y divide-slate-800">
+                        <div th:each="contenido : ${contenidos}" class="flex items-center justify-between p-4 px-6 group">
+                            <div class="flex items-center gap-4">
+                                <svg class="w-5 h-5 text-neutral-700 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span class="text-sm font-medium text-neutral-400" th:text="${contenido.titulo}">Módulo</span>
+                            </div>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-neutral-600 flex items-center gap-2">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2"/></svg>
+                                Lock
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTONES DE PAGO -->
+                <div class="px-8 pb-8" th:if="${yaComprado == null or !yaComprado}">
+
+                    <!-- Botón Gratis -->
+                    <div th:if="${curso.precio == 0}">
+                        <!-- ⭐ Si NO está autenticado -->
+                        <button th:if="${!#authorization.expression('isAuthenticated()')}"
+                                onclick="openModal()"
+                                type="button"
+                                class="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-lg font-semibold text-lg shadow-lg shadow-emerald-500/30 hover:shadow-emerald-400/30 transition-all duration-300">
+                            🔒 Inscribirse Gratis (Requiere cuenta)
+                        </button>
+
+                        <!-- ⭐ Si SÍ está autenticado -->
+                        <form th:if="${#authorization.expression('isAuthenticated()')}"
+                              th:action="@{/inscribirse-gratis}"
+                              method="post">
+                            <input type="hidden" name="idCurso" th:value="${curso.idCurso}">
+                            <button type="submit"
+                                    class="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-lg font-semibold text-lg shadow-lg shadow-emerald-500/30 hover:shadow-emerald-400/30 transition-all duration-300">
+                                🎓 Obtener Gratis
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Botón PayPal -->
+                    <div th:if="${curso.precio > 0}">
+                        <div th:if="${!#authorization.expression('isAuthenticated()')}"
+                             class="text-center">
+                            <button onclick="openModal()"
+                                    type="button"
+                                    class="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-lg font-semibold text-lg shadow-lg shadow-emerald-500/30 hover:shadow-emerald-400/30 transition-all duration-300 mb-4">
+                                Comprar Ahora (Requiere cuenta)
+                            </button>
+                            <p class="text-sm text-slate-400">
+                                Inicia sesión o regístrate para comprar este curso
+                            </p>
+                        </div>
+
+                        <div th:if="${#authorization.expression('isAuthenticated()')}">
+                            <div id="paypal-button-container" class="w-full min-h-[200px]"></div>
+
+                            <div class="text-center text-sm text-slate-400 mt-4">
+                                <p>Pago seguro procesado por PayPal</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
-
     </div>
 
+    <script th:if="${#authorization.expression('isAuthenticated()') && curso.precio > 0 && (yaComprado == null || !yaComprado)}"
+            th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const cursoId = /*[[${curso.idCurso}]]*/ 0;
+            const cursoPrecio = /*[[${curso.precio}]]*/ 0;
+            const cursoTitulo = /*[[${curso.titulo}]]*/ '';
+            inicializarBotonPayPal('paypal-button-container', cursoId, cursoPrecio, cursoTitulo);
+        });
+    </script>
 </div>
 </html>

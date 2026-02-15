@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -24,6 +25,8 @@ public class CompraDTO {
     private String metodoPago;
     private String estado;
 
+    private String emailUsuario;
+
     // Constructor desde entidad
     public CompraDTO(Compra compra) {
         this.idCompra = compra.getIdCompra();
@@ -35,7 +38,7 @@ public class CompraDTO {
         this.precioPagado = compra.getPrecioPagado();
         this.fechaCompra = compra.getFechaCompra();
         this.metodoPago = compra.getMetodoPago();
-        this.estado = compra.getEstado() != null ?
-                compra.getEstado().name() : null;
+        this.estado = Optional.ofNullable(compra.getEstado())
+                .map(Enum::name).orElse(null);
     }
 }

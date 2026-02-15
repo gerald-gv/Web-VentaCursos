@@ -87,10 +87,4 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Compra> compras = new ArrayList<>();
 
-    // Método helper
-    public void agregarCompra(Compra compra) {
-        compras.add(compra);
-        compra.setUsuario(this);
-    }
-
 }

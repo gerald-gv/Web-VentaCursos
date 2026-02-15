@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/admin-layout :: layout(~{::content})}">
+
+<div th:fragment="content">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <div class="mb-10">
+            <div class="flex items-center gap-3 mb-1">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-emerald-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0V18m0 0v1.5m0-1.5h7.5m0 0v1.5m0-1.5V18M6 7.5h12M6 10.5h12m-12 3h12" />
+                </svg>
+                <h1 class="text-3xl font-extrabold text-white tracking-tight">Dashboard</h1>
+            </div>
+            <p class="text-slate-400">Resumen general del rendimiento de tu plataforma.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+
+            <div class="bg-neutral-900 border border-slate-800 rounded-2xl p-6 hover:border-emerald-500/40 transition-all duration-300 group">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                        </svg>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Cursos</p>
+                        <p class="text-3xl font-bold text-white mt-1" th:text="${totalCursos}">0</p>
+                    </div>
+                </div>
+                <a href="/admin/cursos" class="inline-flex items-center gap-1 text-emerald-500 text-sm font-medium hover:gap-2 transition-all">
+                    Gestionar catálogo <span>→</span>
+                </a>
+            </div>
+
+            <div class="bg-neutral-900 border border-slate-800 rounded-2xl p-6 hover:border-blue-500/40 transition-all duration-300 group">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="p-3 rounded-xl bg-blue-500/10 text-blue-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-3.833-6.247 4.125 4.125 0 0 0-3.833 6.247ZM3.076 19.128a9.135 9.135 0 0 1 3.076-1.334 9.135 9.135 0 0 1 3.076 1.334 4.125 4.125 0 0 1-3.833 6.247 4.125 4.125 0 0 1-3.833-6.247ZM12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z" />
+                        </svg>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Usuarios</p>
+                        <p class="text-3xl font-bold text-white mt-1" th:text="${totalUsuarios}">0</p>
+                    </div>
+                </div>
+                <a href="/admin/usuarios" class="inline-flex items-center gap-1 text-blue-500 text-sm font-medium hover:gap-2 transition-all">
+                    Ver Usuarios <span>→</span>
+                </a>
+            </div>
+
+            <div class="bg-neutral-900 border border-slate-800 rounded-2xl p-6 hover:border-purple-500/40 transition-all duration-300 group">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="p-3 rounded-xl bg-purple-500/10 text-purple-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                        </svg>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Ventas Totales</p>
+                        <p class="text-3xl font-bold text-white mt-1" th:text="${totalCompras}">0</p>
+                    </div>
+                </div>
+                <a href="/admin/compras" class="inline-flex items-center gap-1 text-purple-400 text-sm font-medium hover:text-purple-300 transition-colors">
+                    Ver transacciones <span>→</span>
+                </a>
+            </div>
+
+            <div class="bg-neutral-900 border border-slate-800 rounded-2xl p-6 hover:border-yellow-500/40 transition-all duration-300 group">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="p-3 rounded-xl bg-yellow-500/10 text-yellow-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Ingresos (USD)</p>
+                        <p class="text-3xl font-bold text-emerald-400 mt-1">
+                            $<span th:text="${#numbers.formatDecimal(totalIngresos,1,2)}">0.00</span>
+                        </p>
+                    </div>
+                </div>
+                <p class="text-slate-500 text-sm italic font-medium">Balance neto</p>
+            </div>
+
+        </div>
+
+        <div class="bg-neutral-900/50 border border-slate-800 rounded-3xl p-8">
+            <h2 class="text-xl font-bold text-white mb-8 flex items-center gap-2">
+                <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span>
+                Acciones de Administración
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <a href="/admin/cursos/nuevo"
+                   class="group bg-neutral-800 border border-slate-700 p-6 rounded-2xl hover:border-emerald-500 transition-all duration-300">
+                    <div class="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </div>
+                    <h3 class="text-white font-bold mb-1">Crear Curso</h3>
+                    <p class="text-slate-400 text-sm">Publica nuevo contenido para tus alumnos.</p>
+                </a>
+
+                <a href="/admin/cursos"
+                   class="group bg-neutral-800 border border-slate-700 p-6 rounded-2xl hover:border-blue-500 transition-all duration-300">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                        </svg>
+                    </div>
+                    <h3 class="text-white font-bold mb-1">Gestionar Cursos</h3>
+                    <p class="text-slate-400 text-sm">Edita, activa o desactiva cursos existentes.</p>
+                </a>
+
+                <a href="/admin/compras"
+                   class="group bg-neutral-800 border border-slate-700 p-6 rounded-2xl hover:border-purple-500 transition-all duration-300">
+                    <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-white font-bold mb-1">Auditar Ventas</h3>
+                    <p class="text-slate-400 text-sm">Monitorea los ingresos y métodos de pago.</p>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+</html>

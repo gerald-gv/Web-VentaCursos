@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/admin-layout :: layout(~{::content})}">
+
+<div th:fragment="content">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+            <div>
+                <a href="/admin" class="inline-flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-500 hover:text-white transition-all duration-300 group mb-4">
+                    <svg class="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Volver al Dashboard
+                </a>
+                <h1 class="text-3xl font-extrabold text-white tracking-tight">Gestión de Usuarios</h1>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-blue-500 mt-2">
+                    <span th:text="${#lists.size(usuarios)}">0</span> Usuarios Registrados
+                </p>
+            </div>
+
+            <a href="/admin/usuarios/nuevo"
+               class="inline-flex items-center bg-emerald-500 hover:bg-emerald-400 text-black px-6 py-3 rounded-xl font-bold text-sm transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg shadow-emerald-500/20">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                Nuevo Usuario
+            </a>
+        </header>
+
+        <div class="bg-neutral-900/50 border border-slate-800 rounded-3xl overflow-hidden backdrop-blur-sm">
+
+            <div th:if="${usuarios != null and !usuarios.isEmpty()}" class="divide-y divide-slate-800">
+
+                <div class="hidden md:grid grid-cols-12 gap-4 px-8 py-4 bg-neutral-800/30">
+                    <div class="col-span-4 text-[10px] font-bold uppercase tracking-widest text-neutral-500">Usuario</div>
+                    <div class="col-span-3 text-[10px] font-bold uppercase tracking-widest text-neutral-500">Roles</div>
+                    <div class="col-span-2 text-[10px] font-bold uppercase tracking-widest text-neutral-500">Estado</div>
+                    <div class="col-span-3 text-right text-[10px] font-bold uppercase tracking-widest text-neutral-500">Acciones</div>
+                </div>
+
+                <div th:each="usuario : ${usuarios}"
+                     class="grid grid-cols-1 md:grid-cols-12 gap-4 px-8 py-6 items-center hover:bg-neutral-800/30 transition-colors duration-300">
+
+                    <div class="col-span-4 flex items-center gap-4">
+                        <div class="relative">
+                            <div class="w-12 h-12 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-center">
+                                <span class="text-blue-500 font-bold text-lg" th:text="${#strings.substring(usuario.nombre, 0, 1).toUpperCase()}">U</span>
+                            </div>
+                            <div th:if="${usuario.activo}" class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-4 border-neutral-900 rounded-full"></div>
+                        </div>
+                        <div>
+                            <p class="text-white font-bold tracking-tight" th:text="${usuario.nombre}">Nombre</p>
+                            <p class="text-xs text-neutral-500" th:text="${usuario.email}">email@example.com</p>
+                        </div>
+                    </div>
+
+                    <div class="col-span-3 flex flex-wrap gap-2">
+    <span th:each="rol : ${usuario.roles}"
+          th:classappend="${rol.nombreRol == 'ROLE_ADMIN' ? 'text-amber-500 bg-amber-500/10 border-amber-500/20' : 'text-blue-500 bg-blue-500/10 border-blue-500/20'}"
+          class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border"
+          th:text="${rol.nombreRol == 'ROLE_ADMIN' ? 'ADMINISTRADOR' : (rol.nombreRol == 'ROLE_CLIENTE' ? 'CLIENTE' : rol.nombreRol)}">
+        ROLE
+    </span>
+                    </div>
+
+                    <div class="col-span-2">
+                        <span th:if="${usuario.activo}" class="inline-flex items-center text-emerald-500 text-[10px] font-bold uppercase tracking-widest">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mr-2"></span>
+                            Activo
+                        </span>
+                        <span th:unless="${usuario.activo}" class="inline-flex items-center text-red-500 text-[10px] font-bold uppercase tracking-widest">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-2"></span>
+                            Inactivo
+                        </span>
+                    </div>
+
+                    <div class="col-span-3 flex justify-end items-center gap-3">
+
+                        <a th:href="@{/admin/usuarios/detalle/{id}(id=${usuario.idUsuario})}"
+                           class="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-xl transition-all duration-300"
+                           title="Ver detalle">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </a>
+
+                        <a th:href="@{/admin/usuarios/editar/{id}(id=${usuario.idUsuario})}"
+                           class="p-2 text-neutral-400 hover:text-amber-500 hover:bg-amber-500/10 rounded-xl transition-all duration-300"
+                           title="Editar">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                        </a>
+
+                        <!-- Si NO es el admin actual: Botón funcional -->
+                        <button th:if="${usuario.email != emailAdminActual}"
+                                th:data-usuario-id="${usuario.idUsuario}"
+                                th:data-usuario-nombre="${usuario.nombre}"
+                                th:data-usuario-activo="${usuario.activo}"
+                                onclick="cambiarEstadoUsuario(this)"
+                                th:title="${usuario.activo ? 'Desactivar Usuario' : 'Activar Usuario'}"
+                                th:classappend="${usuario.activo
+            ? 'text-orange-500 hover:bg-orange-500/10'
+            : 'text-emerald-500 hover:bg-emerald-500/10'}"
+                                class="p-2 rounded-xl transition-all duration-300">
+
+                            <svg th:if="${usuario.activo}" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+
+                            <svg th:unless="${usuario.activo}" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/>
+                            </svg>
+                        </button>
+
+                        <!-- Si ES el admin actual: Badge -->
+                        <div th:if="${usuario.email == emailAdminActual}"
+                             class="px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs font-bold uppercase tracking-wider"
+                             title="Tu cuenta">
+                            Tú
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${usuarios == null or usuarios.isEmpty()}" class="py-24 text-center">
+                <div class="w-20 h-20 bg-neutral-800 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-2">No hay usuarios</h2>
+                <p class="text-neutral-500 text-sm mb-8">Comienza creando el primer registro de tu sistema.</p>
+                <a href="/admin/usuarios/nuevo" class="bg-white text-black px-8 py-3 rounded-xl font-bold text-sm hover:bg-neutral-200 transition-all">
+                    Crear Usuario
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/admin-confirmaciones.js}"></script>
+</div>
+</html>

@@ -18,12 +18,13 @@ public class CursoServiceTest {
 
     @Test
     void guardarCurso(){
-        Curso curso = new Curso("Curso de testeo con SpringBoot",
-                "Aprender a hacer tests de manera profesional",
-                new BigDecimal(0), true);
-
+        Curso curso = Curso.builder()
+                .titulo("Curso de testeo con SpringBoot")
+                .descripcion("Aprender a hacer tests de manera profesional")
+                .precio(BigDecimal.ZERO)
+                .activo(true)
+                .build();
         Curso saved = cursoService.guardarCurso(curso);
-
         assertEquals("Curso de testeo con SpringBoot", saved.getTitulo());
     }
 }

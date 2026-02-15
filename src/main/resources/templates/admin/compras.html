@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/admin-layout :: layout(~{::content})}">
+
+<div th:fragment="content">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <a href="/admin" class="inline-flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-500 hover:text-white transition-all duration-300 group mb-4">
+            <svg class="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Volver al Dashboard
+        </a>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+                <div class="flex items-center gap-3 mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-emerald-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                    </svg>
+                    <h1 class="text-3xl font-extrabold text-white tracking-tight">Gestión de Compras</h1>
+                </div>
+                <p class="text-slate-400">
+                    Total: <span class="text-slate-200 font-medium" th:text="${#lists.size(compras)}">0</span> compras registradas
+                </p>
+            </div>
+            <div class="bg-emerald-500/10 border border-emerald-500/20 px-6 py-3 rounded-2xl">
+                <span class="text-slate-400 text-sm block">Ingresos Totales</span>
+                <span class="text-2xl font-bold text-emerald-400">$<span th:text="${#numbers.formatDecimal(totalIngresos, 1, 2)}">0.00</span></span>
+            </div>
+        </div>
+
+        <div class="bg-neutral-900/50 border border-slate-800 rounded-2xl p-6 mb-8">
+            <div class="flex items-center gap-2 mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-slate-400">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                </svg>
+                <h2 class="text-lg font-semibold text-white">Filtrar resultados</h2>
+            </div>
+
+            <form method="get" action="/admin/compras" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Curso</label>
+                    <select name="cursoId" class="w-full bg-neutral-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none">
+                        <option value="">Todos los cursos</option>
+                        <option th:each="curso : ${cursos}" th:value="${curso.idCurso}" th:text="${curso.titulo}" th:selected="${cursoIdSeleccionado == curso.idCurso}"></option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Usuario</label>
+                    <select name="usuarioId" class="w-full bg-neutral-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none">
+                        <option value="">Todos los usuarios</option>
+                        <option th:each="usuario : ${usuarios}" th:value="${usuario.idUsuario}" th:text="${usuario.nombre}" th:selected="${usuarioIdSeleccionado == usuario.idUsuario}"></option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Método de Pago</label>
+                    <select name="metodoPago" class="w-full bg-neutral-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none">
+                        <option value="">Todos</option>
+                        <option value="paypal" th:selected="${metodoPagoSeleccionado == 'paypal'}">PayPal</option>
+                        <option value="gratis" th:selected="${metodoPagoSeleccionado == 'gratis'}">Gratis</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Desde</label>
+                    <input type="date" name="fechaInicio" th:value="${fechaInicioSeleccionada}" class="w-full bg-neutral-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Hasta</label>
+                    <input type="date" name="fechaFin" th:value="${fechaFinSeleccionada}" class="w-full bg-neutral-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none">
+                </div>
+
+                <div class="md:col-span-2 lg:col-span-5 flex items-center gap-3 pt-2">
+                    <button type="submit" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-2.5 rounded-xl font-bold transition shadow-lg shadow-emerald-900/20">
+                        Aplicar Filtros
+                    </button>
+                    <a href="/admin/compras" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-8 py-2.5 rounded-xl font-bold transition">
+                        Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="bg-neutral-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                    <tr class="bg-neutral-800/50 border-b border-slate-800">
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">ID</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Usuario</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Curso</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Precio</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Método</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Fecha</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                    <tr th:each="compra : ${compras}" class="hover:bg-neutral-800/30 transition-colors group">
+                        <td class="px-6 py-4 text-sm font-mono text-slate-500" th:text="${compra.idCompra}">1</td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-semibold text-white group-hover:text-emerald-400 transition-colors" th:text="${compra.nombreUsuario}">Usuario</div>
+                            <div class="text-xs text-slate-500" th:text="${compra.emailUsuario}">email@example.com</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-300" th:text="${compra.tituloCurso}">Nombre del Curso</td>
+                        <td class="px-6 py-4">
+                                <span class="text-sm font-bold text-white">
+                                    $<span th:text="${#numbers.formatDecimal(compra.precioPagado,1,2)}">0.00</span>
+                                </span>
+                        </td>
+                        <td class="px-6 py-4">
+                                <span th:if="${compra.metodoPago == 'paypal'}"
+                                      class="text-[10px] uppercase tracking-widest font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2.5 py-1 rounded-md">
+                                    PayPal
+                                </span>
+                            <span th:if="${compra.metodoPago == 'gratis'}"
+                                  class="text-[10px] uppercase tracking-widest font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-md">
+                                    Gratis
+                                </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-500" th:text="${#temporals.format(compra.fechaCompra, 'dd MMM yyyy HH:mm')}">
+                            01/01/2026
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${compras == null or compras.isEmpty()}" class="p-20 text-center">
+                <div class="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-2">Sin resultados</h2>
+                <p class="text-slate-500 text-sm max-w-xs mx-auto" th:text="${(cursoIdSeleccionado != null || usuarioIdSeleccionado != null) ? 'No hay compras que coincidan con los filtros aplicados.' : 'Las compras aparecerán aquí cuando los alumnos se inscriban.'}"></p>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

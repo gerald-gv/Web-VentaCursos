@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CursoRepository extends JpaRepository<Curso, Integer> {
     List<Curso> findByActivoTrue();
+
+    Long countByActivoTrue();
 }

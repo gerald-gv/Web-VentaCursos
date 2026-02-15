@@ -9,50 +9,42 @@ import com.EFSRTIII.ventacursos.repositories.CompraRepository;
 import com.EFSRTIII.ventacursos.repositories.CursoRepository;
 import com.EFSRTIII.ventacursos.repositories.UsuarioRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CompraService {
 
-    @Autowired
-    private CompraRepository compraRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private CursoRepository cursoRepository;
+    private final CompraRepository compraRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final CursoRepository cursoRepository;
 
     @Transactional
     public CompraDTO realizarCompra(CompraRequestDTO request) {
-        // Verificar si ya compró el curso
+
         if (compraRepository.existsByUsuarioIdUsuarioAndCursoIdCurso(
                 request.getIdUsuario(), request.getIdCurso())) {
             throw new RuntimeException("El usuario ya ha comprado este curso");
         }
 
         Usuario usuario = usuarioRepository.findById(request.getIdUsuario())
-                .orElseThrow(() -> new RuntimeException(
-                        "Usuario no encontrado con ID: " + request.getIdUsuario()));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         if (!usuario.isActivo()) {
             throw new RuntimeException("El usuario no está activo");
         }
 
-        // Buscar curso
         Curso curso = cursoRepository.findById(request.getIdCurso())
-                .orElseThrow(() -> new RuntimeException(
-                        "Curso no encontrado con ID: " + request.getIdCurso()));
+                .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
 
-        if (!curso.isActivo()) {
+        if (!curso.getActivo()) {
             throw new RuntimeException("El curso no está disponible");
         }
 
-        // Crear compra
         Compra compra = new Compra();
         compra.setUsuario(usuario);
         compra.setCurso(curso);
@@ -65,36 +57,51 @@ public class CompraService {
 
     @Transactional
     public List<CompraDTO> obtenerCursosComprados(Integer idUsuario) {
+
         if (!usuarioRepository.existsById(idUsuario)) {
-            throw new RuntimeException("Usuario no encontrado con ID: " + idUsuario);
+            throw new RuntimeException("Usuario no encontrado");
         }
 
         return compraRepository.findByUsuarioIdUsuario(idUsuario)
                 .stream()
                 .map(CompraDTO::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    @Transactional
     public List<CompraDTO> obtenerTodasLasCompras() {
         return compraRepository.findAll()
                 .stream()
                 .map(CompraDTO::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
     public boolean usuarioTieneCurso(Integer idUsuario, Integer idCurso) {
-        return compraRepository.existsByUsuarioIdUsuarioAndCursoIdCurso(
-                idUsuario, idCurso);
+        return compraRepository.existsByUsuarioIdUsuarioAndCursoIdCurso(idUsuario, idCurso);
     }
 
     @Transactional
     public CompraDTO obtenerCompraPorId(Integer idCompra) {
-        Compra compra = compraRepository.findById(idCompra)
-                .orElseThrow(() -> new RuntimeException(
-                        "Compra no encontrada con ID: " + idCompra));
+        return compraRepository.findById(idCompra)
+                .map(CompraDTO::new)
+                .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
+    }
 
-        return new CompraDTO(compra);
+    public List<CompraDTO> buscarComprasConFiltros(
+            Integer idCurso,
+            Integer idUsuario,
+            String metodoPago,
+            LocalDateTime fechaInicio,
+            LocalDateTime fechaFin) {
+
+        return compraRepository.buscarConFiltros(
+                        idCurso,
+                        idUsuario,
+                        metodoPago,
+                        fechaInicio,
+                        fechaFin
+                ).stream()
+                .map(CompraDTO::new)
+                .toList();
     }
 }
