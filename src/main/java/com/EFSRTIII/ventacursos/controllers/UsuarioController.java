@@ -1,68 +1,56 @@
 package com.EFSRTIII.ventacursos.controllers;
 
-import com.EFSRTIII.ventacursos.models.Curso;
 import com.EFSRTIII.ventacursos.models.Usuario;
-import com.EFSRTIII.ventacursos.service.CursoService;
 import com.EFSRTIII.ventacursos.service.UsuarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
+@RequiredArgsConstructor
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
-    private final PasswordEncoder passwordEncoder;
-    private final CursoService cursoService;
-
-    public UsuarioController(UsuarioService usuarioService, PasswordEncoder passwordEncoder, CursoService cursoService){
-        this.usuarioService = usuarioService;
-        this.passwordEncoder = passwordEncoder;
-        this.cursoService = cursoService;
-    }
 
     @GetMapping("/mi-cuenta")
     public String verPerfil(Authentication authentication,
-                            @RequestParam(value = "editar", required = false) Boolean editar,
-                            @RequestParam(value = "mensaje", required = false) String mensaje,
+                            @RequestParam(required = false) Boolean editar,
+                            @RequestParam(required = false) String mensaje,
                             Model model) {
-        String email = authentication.getName();
-        Optional<Usuario> optionalUsuario = usuarioService.buscarPorEmail(email);
 
-        if (optionalUsuario.isPresent()) {
-            Usuario usuario = optionalUsuario.get();
+        try {
+            Usuario usuario = obtenerUsuarioAutenticado(authentication);
+
             model.addAttribute("usuario", usuario);
-            model.addAttribute("isEditing", editar != null && editar);
-            if (mensaje != null) {
-                model.addAttribute("mensaje", mensaje);
-            }
+            model.addAttribute("isEditing", Boolean.TRUE.equals(editar));
+            model.addAttribute("mensaje", mensaje);
+
             return "usuario/perfil";
-        } else {
+
+        } catch (RuntimeException e) {
             return "redirect:/";
         }
     }
 
-
     @PostMapping("/actualizar")
-    public String actualizarPerfil(Authentication authentication, @RequestParam String nombre,
+    public String actualizarPerfil(Authentication authentication,
+                                   @RequestParam String nombre,
                                    @RequestParam String email,
                                    @RequestParam(required = false) String contrasenia,
                                    Model model) {
 
-        String userEmail = authentication.getName();
-        Optional<Usuario> optionalUsuario = usuarioService.buscarPorEmail(userEmail);
+        try {
+            Usuario usuario = obtenerUsuarioAutenticado(authentication);
 
-        if (optionalUsuario.isPresent()) {
-            Usuario usuario = optionalUsuario.get();
-
-            // Validar si el email ya existe en otro usuario
             Optional<Usuario> emailExistente = usuarioService.buscarPorEmail(email);
-            if (emailExistente.isPresent() && !emailExistente.get().getIdUsuario().equals(usuario.getIdUsuario())) {
+
+            if (emailExistente.isPresent() &&
+                    !emailExistente.get().getIdUsuario().equals(usuario.getIdUsuario())) {
+
                 model.addAttribute("usuario", usuario);
                 model.addAttribute("isEditing", true);
                 model.addAttribute("error", "El correo ya está registrado");
@@ -73,8 +61,13 @@ public class UsuarioController {
 
             return "redirect:/mi-cuenta?mensaje=Perfil+actualizado+exitosamente";
 
-        } else {
+        } catch (RuntimeException e) {
             return "redirect:/";
         }
+    }
+    //METODO HELPER
+    private Usuario obtenerUsuarioAutenticado(Authentication authentication) {
+        return usuarioService.buscarPorEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 }

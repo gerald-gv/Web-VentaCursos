@@ -52,12 +52,12 @@ public class SecurityConfig {
                                         "/auth/register",
                                         "/nosotros",
                                         "/programas",
+                                        "/programas/**",
                                         "/soporte",
                                         "/js/**"
                                 ).permitAll()
 
-                                .requestMatchers("/admin/**")
-                                .hasRole("ADMIN")
+                                .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
 
                                 .requestMatchers("/usuario/**")
                                 .hasAnyRole("ADMIN", "CLIENTE")
@@ -65,11 +65,23 @@ public class SecurityConfig {
                                 .anyRequest().authenticated())
 
                 .formLogin(form -> form
+                        .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .usernameParameter("email")
                         .passwordParameter("contrasenia")
-                        .defaultSuccessUrl("/", true)
-                        .failureUrl("/?error=true")
+                        .defaultSuccessUrl("/", false)
+                        .successHandler((request, response, authentication) -> {
+                            // Leer el parámetro 'continue' del JS del layout.html, era esto o crear otro handler y la verdad que flojera.
+                            String redirectUrl = request.getParameter("continue");
+
+                            // Si está vacío o es /login, ir a home
+                            if (redirectUrl == null || redirectUrl.isEmpty() || redirectUrl.equals("/login")) {
+                                redirectUrl = "/";
+                            }
+
+                            response.sendRedirect(redirectUrl);
+                        })
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
 

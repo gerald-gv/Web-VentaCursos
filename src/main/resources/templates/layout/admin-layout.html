@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout (content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link-active { @apply text-white border-b-2 border-emerald-500; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-black text-slate-300 selection:bg-emerald-500/30">
+
+<nav class="bg-neutral-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+
+            <a href="/admin" class="flex items-center gap-3 group">
+
+                <span class="text-2xl font-semibold text-white tracking-tighter uppercase">Business Academy</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-1">
+                <a href="/admin" class="px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:text-white transition-colors">
+                    Dashboard
+                </a>
+                <a href="/admin/cursos" class="px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:text-emerald-500 transition-colors">
+                    Cursos
+                </a>
+                <a href="/admin/usuarios" class="px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:text-blue-500 transition-colors">
+                    Usuarios
+                </a>
+                <a href="/admin/compras" class="px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:text-purple-500 transition-colors">
+                    Compras
+                </a>
+
+                <div class="h-6 w-[1px] bg-slate-800 mx-4"></div>
+
+                <a href="/" class="flex items-center gap-2 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-neutral-500 hover:text-white transition-all">
+                    <span>Sitio Web</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </div>
+
+            <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-400 hover:text-white transition">
+                <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+                </svg>
+            </button>
+        </div>
+
+        <div id="mobileMenu" class="hidden md:hidden border-t border-slate-800 py-6 space-y-4">
+            <a href="/admin" class="block text-[11px] font-bold uppercase tracking-widest py-2">Dashboard</a>
+            <a href="/admin/cursos" class="block text-[11px] font-bold uppercase tracking-widest py-2 text-emerald-500">Cursos</a>
+            <a href="/admin/usuarios" class="block text-[11px] font-bold uppercase tracking-widest py-2 text-blue-500">Usuarios</a>
+            <a href="/admin/compras" class="block text-[11px] font-bold uppercase tracking-widest py-2 text-purple-500">Compras</a>
+        </div>
+    </div>
+</nav>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+    <div th:if="${mensaje}" class="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-4 flex items-center gap-4 animate-pulse-once shadow-xl shadow-emerald-500/5">
+        <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0 text-black">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <p class="text-sm font-bold text-white tracking-tight" th:text="${mensaje}">Operación exitosa</p>
+    </div>
+
+    <div th:if="${error}" class="bg-red-500/5 border border-red-500/20 rounded-2xl p-4 flex items-center gap-4 shadow-xl shadow-red-500/5">
+        <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0 text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <p class="text-sm font-bold text-white tracking-tight" th:text="${error}">Ha ocurrido un error</p>
+    </div>
+</div>
+
+<main class="flex-grow pb-8">
+    <div th:insert="${content}"></div>
+</main>
+
+<div th:replace="~{components/Footer :: Footer}"></div>
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobileMenu');
+        menu.classList.toggle('hidden');
+    }
+</script>
+</body>
+</html>

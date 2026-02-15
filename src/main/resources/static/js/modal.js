@@ -1,47 +1,50 @@
-const modalBackdrop = document.getElementById('modalBackdrop');
-const modalBox = modalBackdrop.querySelector('div.bg-neutral-950'); // modal interno
+window.openModal = function() {
+    console.log("Abriendo modal y guardando URL...");
 
-function openModal() {
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalBox = document.getElementById('modalBox');
 
-    // Inicio de la Animacion
-    modalBackdrop.style.display = 'flex';
-    modalBackdrop.style.opacity = '0';
-    modalBox.style.opacity = '0';
-    modalBox.style.transform = 'scale(0.95)';
+    if (modalBackdrop) {
+        // 1. Lógica de visibilidad (la que arreglamos antes)
+        modalBackdrop.style.display = 'flex';
+        void modalBackdrop.offsetWidth;
+        modalBackdrop.style.opacity = '1';
+        modalBackdrop.style.pointerEvents = 'auto';
 
-    // Forzar reflow para reiniciar animación
-    void modalBackdrop.offsetWidth;
+        if (modalBox) {
+            modalBox.style.opacity = '1';
+            modalBox.style.transform = 'scale(1)';
+        }
 
-    // Fondo opaco del Modal
-    modalBackdrop.style.transition = 'opacity 0.3s ease';
-    modalBackdrop.style.opacity = '1';
+        // Lógica de la URL (la que estaba en el HTML)
+        const currentUrl = window.location.pathname;
+        const redirectField = document.getElementById('redirect-after-login');
+        if (redirectField) {
+            redirectField.value = currentUrl;
+            console.log("URL guardada:", currentUrl);
+        }
 
-    // Animacion Suave para el Modal
-    modalBox.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-    modalBox.style.opacity = '1';
-    modalBox.style.transform = 'scale(1)';
-
-    showLogin();
-}
-
-function closeModal() {
-
-    // Animacion de salida
-    modalBackdrop.style.opacity = '0';
-    modalBox.style.opacity = '0';
-    modalBox.style.transform = 'scale(0.95)';
-
-    // Cuando termine la animación ocultamos el modal completamente
-    modalBackdrop.addEventListener('transitionend', handleTransitionEnd);
-}
-
-function handleTransitionEnd(e) {
-    if (e.target === modalBackdrop && modalBackdrop.style.opacity === '0') {
-        modalBackdrop.style.display = 'none';
-        modalBackdrop.removeEventListener('transitionend', handleTransitionEnd);
+        showLogin();
     }
-}
+};
+window.closeModal = function() {
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalBox = document.getElementById('modalBox');
 
+    // Desactivar clics INMEDIATAMENTE para evitar ese muro del div back
+    modalBackdrop.style.pointerEvents = 'none';
+
+    modalBackdrop.style.opacity = '0';
+    if (modalBox) {
+        modalBox.style.opacity = '0';
+        modalBox.style.transform = 'scale(0.95)';
+    }
+    setTimeout(() => {
+        if (modalBackdrop.style.opacity === "0") {
+            modalBackdrop.style.display = 'none';
+        }
+    }, 300);
+};
 function showLogin() {
     document.getElementById('loginForm').classList.remove('hidden');
     document.getElementById('registerForm').classList.add('hidden');
@@ -65,8 +68,16 @@ function showRegister() {
 }
 
 // Cerrar modal si se hace clic fuera del modalBox
-modalBackdrop.addEventListener('click', (event) => {
-    if (event.target === modalBackdrop) {
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('modalBackdrop');
+
+    // Salir si modal no existe
+    if (!modal) {
+        return;
+    }
+
+    // Cerrar solo si se hizo click en el fondo (backdrop)
+    if (event.target === modal) {
         closeModal();
     }
 });

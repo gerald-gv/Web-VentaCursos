@@ -16,63 +16,95 @@
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div th:each="program : ${programas}" class="group border border-slate-800 rounded-2xl bg-slate-900/50 hover:border-emerald-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/10 flex flex-col p-6">
 
-                <!-- Iteracion -->
-                <div th:each="program : ${programas}" class="border border-slate-800 rounded-xl hover:border-emerald-500/50 transition-all hover:shadow-lg hover:shadow-emerald-500/10 flex flex-col p-6">
-
-                    <!-- Header -->
                     <div class="mb-4">
-
-                        <h3 class="text-white text-xl font-semibold"
+                        <h3 class="text-white text-xl font-bold group-hover:text-emerald-400 transition-colors"
                             th:text="${program.titulo}">
                         </h3>
-
-                        <p class="text-slate-500 mt-2"
+                        <p class="text-slate-400 mt-2 text-sm line-clamp-2"
                            th:text="${program.descripcion}">
                         </p>
                     </div>
 
-                    <!-- Contenido -->
                     <div class="flex-grow flex flex-col justify-between">
-
                         <div class="space-y-4">
-
-                            <!-- Precio -->
-                            <div class="border-t border-slate-800 pt-4 mt-4">
+                            <div class="border-t border-slate-800/60 pt-4 mt-4">
                                 <div class="flex items-baseline gap-2">
-
-                                    <span class="text-3xl font-bold text-emerald-500"
-                                         th:text="'S/' + ${program.precio}">
-                                    </span>
-                                    <span class="text-slate-500 text-sm">
-                                        / acceso de por vida
-                                    </span>
-
+                        <span class="text-3xl font-black tracking-tight text-emerald-500"
+                              th:text="'S/' + ${program.precio}">
+                        </span>
+                                    <span class="text-slate-500 text-xs uppercase tracking-wider font-medium">
+                            / Acceso de por vida
+                        </span>
                                 </div>
                             </div>
-
                         </div>
 
-                        <button  class="w-full mt-6 bg-green-700 hover:bg-green-600 text-white py-2 rounded shadow-lg shadow-green-500/40 hover:shadow-green-400/40 transition-all duration-300">
-                            Inscribirse Ahora
-                        </button>
+                        <div class="mt-8">
+                            <div th:if="${cursosComprados == null || !cursosComprados.contains(program.idCurso)}"
+                                 class="flex flex-col space-y-3">
 
+                                <div class="w-full">
+                                    <div th:if="${program.precio == 0}">
+                                        <button th:if="${!#authorization.expression('isAuthenticated()')}"
+                                                onclick="openModal()"
+                                                type="button"
+                                                class="w-full bg-emerald-600 hover:bg-emerald-400 text-neutral-950 text-[11px] font-black uppercase tracking-[0.2em] py-3.5 rounded-xl shadow-lg shadow-emerald-900/40 transition-all duration-300 active:scale-[0.96] flex items-center justify-center gap-2">
+                                            <span>🔒 Inscribirse Gratis</span>
+                                        </button>
+
+                                        <form th:if="${#authorization.expression('isAuthenticated()')}"
+                                              th:action="@{/inscribirse-gratis}"
+                                              method="post">
+                                            <input type="hidden" name="idCurso" th:value="${program.idCurso}">
+                                            <button type="submit"
+                                                    class="w-full bg-emerald-600 hover:bg-emerald-400 text-neutral-950 text-[11px] font-black uppercase tracking-[0.2em] py-3.5 rounded-xl shadow-lg shadow-emerald-900/40 transition-all duration-300 active:scale-[0.96]">
+                                                Inscribirse Gratis
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <div th:if="${program.precio > 0}">
+                                        <button th:if="${!#authorization.expression('isAuthenticated()')}"
+                                                onclick="openModal()"
+                                                type="button"
+                                                class="w-full bg-emerald-600 hover:bg-emerald-400 text-neutral-950 text-[11px] font-black uppercase tracking-[0.2em] py-3.5 rounded-xl shadow-lg shadow-emerald-900/40 transition-all duration-300 active:scale-[0.96] flex items-center justify-center gap-2">
+                                            <span>Comprar Ahora</span>
+                                        </button>
+
+                                        <button th:if="${#authorization.expression('isAuthenticated()')}"
+                                                th:attr="data-curso-id=${program.idCurso}, data-curso-precio=${program.precio}, data-curso-titulo=${program.titulo}"
+                                                onclick="abrirModalPayPal(this.getAttribute('data-curso-id'), parseFloat(this.getAttribute('data-curso-precio')), this.getAttribute('data-curso-titulo'))"
+                                                class="w-full bg-emerald-600 hover:bg-emerald-400 text-neutral-950 text-[11px] font-black uppercase tracking-[0.2em] py-3.5 rounded-xl shadow-lg shadow-emerald-900/40 transition-all duration-300 active:scale-[0.96]">
+                                            Comprar Ahora
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <a th:href="@{/programas/{id}(id=${program.idCurso})}"
+                                   class="block w-full text-center border border-slate-700 bg-slate-800/20 text-slate-300 py-3 rounded-xl hover:border-white hover:text-white hover:bg-slate-800/50 transition-all duration-300 text-[10px] font-black uppercase tracking-[0.2em]">
+                                    Ver Detalles
+                                </a>
+                            </div>
+
+                            <div th:if="${cursosComprados != null && cursosComprados.contains(program.idCurso)}"
+                                 class="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-4 flex flex-col items-center justify-center gap-1 group/badge transition-all duration-300 hover:bg-emerald-500/10">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]">Acceso Verificado</p>
+                                </div>
+                                <a th:href="@{/mis-cursos/{id}(id=${program.idCurso})}"
+                                   class="text-[15px] font-bold text-white/70 hover:text-white underline decoration-emerald-500/50 underline-offset-4 transition-colors">
+                                    Ir al aula virtual
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <a th:href="@{/programas/{id}(id=${program.idCurso})}"
-                       class="w-full mt-3 text-center border border-emerald-500 text-emerald-500 py-2 rounded-lg
-          hover:bg-emerald-500 hover:text-white
-          hover:shadow-lg hover:shadow-emerald-500/20
-          transition-all duration-300">
-                        Ver Detalles
-                    </a>
-
                 </div>
-
-
             </div>
         </div>
     </section>
-
 </div>
 </body>
 </html>
